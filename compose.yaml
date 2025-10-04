@@ -1,0 +1,14 @@
+services:
+  rabbit:
+    image: rabbitmq:4.1-management-alpine
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - default
+      - tpre814_network
+
+networks:
+  tpre814_network:
+    external: true
+    name: TPRE814
