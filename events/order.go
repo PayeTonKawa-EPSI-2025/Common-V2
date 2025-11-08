@@ -2,8 +2,6 @@ package events
 
 import (
 	"time"
-
-	"github.com/PayeTonKawa-EPSI-2025/Common/models"
 )
 
 const (
@@ -13,7 +11,13 @@ const (
 )
 
 type OrderEvent struct {
-	Type      EventType    `json:"type"`
-	Order     models.Order `json:"order"`
-	Timestamp time.Time    `json:"timestamp"`
+	Type      EventType       `json:"type"`
+	Order     SimplifiedOrder `json:"order"`
+	Timestamp time.Time       `json:"timestamp"`
+}
+
+type SimplifiedOrder struct {
+	OrderID    uint   `json:"orderId"`
+	CustomerID uint   `json:"customerId"`
+	ProductIDs []uint `json:"productIds,omitempty"`
 }
