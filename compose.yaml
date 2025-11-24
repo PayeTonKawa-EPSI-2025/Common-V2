@@ -1,4 +1,40 @@
 services:
+  traefik:
+    image: traefik:v3.6
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - tpre814_network
+    labels:
+      - "traefik.enable=true"
+
+  krakend:
+    image: krakend:2.12
+    ports:
+      - "8000:8000"  # KrakenD API Gateway
+    volumes:
+      - ./krakend:/etc/krakend
+    command: ["run", "-d", "-c", "/etc/krakend/krakend.json"]
+    networks:
+      - tpre814_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.krakend.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.krakend.entrypoints=web"
+      - "traefik.http.services.krakend.loadbalancer.server.port=8000"
+    depends_on:
+      - traefik
+
   rabbit:
     image: rabbitmq:4.1-management-alpine
     ports:

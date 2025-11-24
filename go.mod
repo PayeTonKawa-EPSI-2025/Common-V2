@@ -2,7 +2,7 @@ module github.com/PayeTonKawa-EPSI-2025/Common
 
 go 1.25.3
 
-require gorm.io/gorm v1.31.1
+require gorm.io/gorm v1.31.0
 
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect

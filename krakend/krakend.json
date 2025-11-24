@@ -1,0 +1,263 @@
+{
+  "$schema": "https://www.krakend.io/schema/v2.7/krakend.json",
+  "version": 3,
+  "name": "Paye Ton Kawa API Gateway",
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "port": 8000,
+  "endpoints": [
+    {
+      "endpoint": "/customers",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/customers",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://customers-api:8081"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/customers/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/customers/{id}",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://customers-api:8081"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/customers",
+      "method": "POST",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/customers",
+          "encoding": "json",
+          "method": "POST",
+          "host": [
+            "http://customers-api:8081"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/customers/{id}",
+      "method": "PUT",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/customers/{id}",
+          "encoding": "json",
+          "method": "PUT",
+          "host": [
+            "http://customers-api:8081"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/customers/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/customers/{id}",
+          "encoding": "json",
+          "method": "DELETE",
+          "host": [
+            "http://customers-api:8081"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/orders",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://orders-api:8082"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/orders/{id}",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://orders-api:8082"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders",
+      "method": "POST",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/orders",
+          "encoding": "json",
+          "method": "POST",
+          "host": [
+            "http://orders-api:8082"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders/{id}",
+      "method": "PUT",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/orders/{id}",
+          "encoding": "json",
+          "method": "PUT",
+          "host": [
+            "http://orders-api:8082"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/orders/{id}",
+          "encoding": "json",
+          "method": "DELETE",
+          "host": [
+            "http://orders-api:8082"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/products",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/products",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://products-api:8083"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/products/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/products/{id}",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://products-api:8083"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/products",
+      "method": "POST",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/products",
+          "encoding": "json",
+          "method": "POST",
+          "host": [
+            "http://products-api:8083"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/products/{id}",
+      "method": "PUT",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/products/{id}",
+          "encoding": "json",
+          "method": "PUT",
+          "host": [
+            "http://products-api:8083"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/products/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/products/{id}",
+          "encoding": "json",
+          "method": "DELETE",
+          "host": [
+            "http://products-api:8083"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/__health",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://localhost:8000"
+          ]
+        }
+      ]
+    }
+  ],
+  "extra_config": {
+    "telemetry/logging": {
+      "level": "INFO",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true
+    },
+    "telemetry/metrics": {
+      "collection_time": "60s",
+      "listen_address": ":8090"
+    }
+  }
+}
