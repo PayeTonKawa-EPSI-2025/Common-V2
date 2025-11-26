@@ -3,7 +3,7 @@ package events
 import (
 	"time"
 
-	"github.com/PayeTonKawa-EPSI-2025/Common/models"
+	"github.com/PayeTonKawa-EPSI-2025/Common-V2/models"
 )
 
 const (

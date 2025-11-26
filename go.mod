@@ -1,4 +1,4 @@
-module github.com/PayeTonKawa-EPSI-2025/Common
+module github.com/PayeTonKawa-EPSI-2025/Common-V2
 
 go 1.25.3
 
