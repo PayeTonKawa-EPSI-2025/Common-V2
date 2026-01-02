@@ -44,7 +44,19 @@ services:
       - default
       - tpre814_network
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    command: start-dev
+    ports:
+      - "8081:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - tpre814_network
+
 networks:
   tpre814_network:
     external: true
     name: TPRE814
+
