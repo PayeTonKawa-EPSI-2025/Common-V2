@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -11,12 +12,17 @@ func RequireRole(role string) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			roles, err := GetRoles(r.Context())
 			if err != nil {
-				http.Error(w, "Unauthorized: failed to get roles", http.StatusUnauthorized)
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
 
 			if !hasRole(roles, role) {
-				http.Error(w, fmt.Sprintf("Forbidden: requires role '%s'", role), http.StatusForbidden)
+				// Generic error message - don't reveal required roles in production
+				if DebugMode {
+					http.Error(w, fmt.Sprintf("Forbidden: requires role '%s'", role), http.StatusForbidden)
+				} else {
+					http.Error(w, "Forbidden", http.StatusForbidden)
+				}
 				return
 			}
 
@@ -31,7 +37,7 @@ func RequireAnyRole(allowedRoles ...string) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			roles, err := GetRoles(r.Context())
 			if err != nil {
-				http.Error(w, "Unauthorized: failed to get roles", http.StatusUnauthorized)
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
 
@@ -42,7 +48,12 @@ func RequireAnyRole(allowedRoles ...string) func(http.Handler) http.Handler {
 				}
 			}
 
-			http.Error(w, fmt.Sprintf("Forbidden: requires one of roles: %v", allowedRoles), http.StatusForbidden)
+			// Generic error message in production
+			if DebugMode {
+				http.Error(w, fmt.Sprintf("Forbidden: requires one of roles: %v", allowedRoles), http.StatusForbidden)
+			} else {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+			}
 		})
 	}
 }
@@ -53,13 +64,18 @@ func RequireAllRoles(requiredRoles ...string) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			roles, err := GetRoles(r.Context())
 			if err != nil {
-				http.Error(w, "Unauthorized: failed to get roles", http.StatusUnauthorized)
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
 
 			for _, requiredRole := range requiredRoles {
 				if !hasRole(roles, requiredRole) {
-					http.Error(w, fmt.Sprintf("Forbidden: requires all roles: %v", requiredRoles), http.StatusForbidden)
+					// Generic error message in production
+					if DebugMode {
+						http.Error(w, fmt.Sprintf("Forbidden: requires all roles: %v", requiredRoles), http.StatusForbidden)
+					} else {
+						http.Error(w, "Forbidden", http.StatusForbidden)
+					}
 					return
 				}
 			}
@@ -106,6 +122,47 @@ func HasAnyRole(r *http.Request, allowedRoles ...string) bool {
 // HasAllRoles checks if the user in the context has all of the specified roles
 func HasAllRoles(r *http.Request, requiredRoles ...string) bool {
 	roles, err := GetRoles(r.Context())
+	if err != nil {
+		return false
+	}
+
+	for _, requiredRole := range requiredRoles {
+		if !hasRole(roles, requiredRole) {
+			return false
+		}
+	}
+	return true
+}
+
+// Context-based role checking functions (for use in handlers without http.Request)
+
+// HasRoleInContext checks if the user in the context has the specified role
+func HasRoleInContext(ctx context.Context, role string) bool {
+	roles, err := GetRoles(ctx)
+	if err != nil {
+		return false
+	}
+	return hasRole(roles, role)
+}
+
+// HasAnyRoleInContext checks if the user in the context has any of the specified roles
+func HasAnyRoleInContext(ctx context.Context, allowedRoles ...string) bool {
+	roles, err := GetRoles(ctx)
+	if err != nil {
+		return false
+	}
+
+	for _, allowedRole := range allowedRoles {
+		if hasRole(roles, allowedRole) {
+			return true
+		}
+	}
+	return false
+}
+
+// HasAllRolesInContext checks if the user in the context has all of the specified roles
+func HasAllRolesInContext(ctx context.Context, requiredRoles ...string) bool {
+	roles, err := GetRoles(ctx)
 	if err != nil {
 		return false
 	}
