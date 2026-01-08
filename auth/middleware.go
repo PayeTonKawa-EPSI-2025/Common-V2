@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"slices"
 	"net/http"
 	"strings"
 )
@@ -40,7 +41,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func RequireRole(role string) func(http.Handler) http.Handler {
+func RequireRole(requiredRole string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -50,11 +51,9 @@ func RequireRole(role string) func(http.Handler) http.Handler {
 				return
 			}
 
-			for _, r := range claims.Roles {
-				if r == role {
-					next.ServeHTTP(w, r)
-					return
-				}
+			if slices.Contains(claims.Roles, requiredRole) {
+				next.ServeHTTP(w, r)
+				return
 			}
 
 			http.Error(w, "Forbidden", http.StatusForbidden)
